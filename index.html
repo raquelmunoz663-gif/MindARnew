@@ -3,39 +3,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        let currentModel = 0;
-        const models = ["#flowerModel", "#butterflyModel"];
-        const flowerEntity = document.querySelector("#flower-clickable");
+        const sceneEl = document.querySelector('a-scene');
 
-        flowerEntity.addEventListener("click", () => {
-          currentModel = (currentModel + 1) % models.length;
-          flowerEntity.setAttribute("gltf-model", models[currentModel]);
-          console.log("Modelo cambiado a:", models[currentModel]);
+        sceneEl.addEventListener('loaded', function () {
+          let currentModel = 0;
+          const models = ["#flowerModel", "#butterflyModel"];
+          const flowerEntity = document.querySelector("#flower-clickable");
+
+          if (!flowerEntity) {
+            console.error("❌ No se encontró el elemento #flower-clickable");
+            return;
+          }
+
+          flowerEntity.addEventListener("click", () => {
+            currentModel = (currentModel + 1) % models.length;
+            flowerEntity.setAttribute("gltf-model", models[currentModel]);
+            console.log("✅ Modelo cambiado a:", models[currentModel]);
+          });
         });
       });
     </script>
   </head>
+
   <body>
     <a-scene 
       mindar-image="imageTargetSrc: ./target.mind; maxTrack: 2"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false">
+      device-orientation-permission-ui="enabled: false"
+      embedded
+    >
 
       <a-assets>
         <a-asset-item id="flowerModel" src="./flower.glb"></a-asset-item>
         <a-asset-item id="butterflyModel" src="./Butterfly.glb"></a-asset-item>
-
         <a-asset-item id="treeModel" src="./Tree.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera position="0 0 0" 
-                look-controls="enabled: false" 
-                cursor="fuse: false; rayOrigin: mouse;" 
-                raycaster="objects: .clickable">
+      <a-camera 
+        position="0 0 0"
+        look-controls="enabled: false"
+        cursor="fuse: false; rayOrigin: mouse;"
+        raycaster="objects: .clickable">
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
@@ -50,6 +63,7 @@
         </a-gltf-model>
       </a-entity>
 
+      <!-- Target 1: árbol -->
       <a-entity mindar-image-target="targetIndex: 1">
         <a-gltf-model 
           rotation="0 0 0"
@@ -59,6 +73,7 @@
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
+
     </a-scene>
   </body>
 </html>
