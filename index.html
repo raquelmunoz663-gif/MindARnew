@@ -3,25 +3,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const sceneEl = document.querySelector('a-scene');
+        const sceneEl = document.querySelector("a-scene");
 
-        sceneEl.addEventListener('loaded', function () {
+        sceneEl.addEventListener("loaded", function () {
           let currentModel = 0;
           const models = ["#flowerModel", "#butterflyModel"];
-          const flowerEntity = document.querySelector("#flower-clickable");
+          const modelDisplay = document.querySelector("#model-display");
+          const clickPlane = document.querySelector("#click-plane");
 
-          if (!flowerEntity) {
-            console.error("❌ No se encontró el elemento #flower-clickable");
-            return;
-          }
+          if (!modelDisplay || !clickPlane) return;
 
-          flowerEntity.addEventListener("click", () => {
+          clickPlane.addEventListener("click", () => {
             currentModel = (currentModel + 1) % models.length;
-            flowerEntity.setAttribute("gltf-model", models[currentModel]);
-            console.log("✅ Modelo cambiado a:", models[currentModel]);
+            modelDisplay.setAttribute("gltf-model", models[currentModel]);
           });
         });
       });
@@ -37,10 +34,9 @@
       device-orientation-permission-ui="enabled: false"
       embedded
     >
-
       <a-assets>
         <a-asset-item id="flowerModel" src="./flower.glb"></a-asset-item>
-        <a-asset-item id="butterflyModel" src="./Campfire.glb"></a-asset-item>
+        <a-asset-item id="butterflyModel" src="./Butterfly.glb"></a-asset-item>
         <a-asset-item id="treeModel" src="./Tree.glb"></a-asset-item>
       </a-assets>
 
@@ -53,14 +49,23 @@
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model 
-          id="flower-clickable"
-          class="clickable"
+          id="model-display"
           rotation="0 0 0"
           position="0 0.25 -0.3"
           scale="0.2 0.2 0.2"
           src="#flowerModel"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
+
+        <a-plane 
+          id="click-plane"
+          class="clickable"
+          position="0 0.25 -0.3"
+          width="0.4"
+          height="0.4"
+          rotation="-90 0 0"
+          material="opacity: 0; transparent: true">
+        </a-plane>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
@@ -72,20 +77,8 @@
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
-
     </a-scene>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
 
 
