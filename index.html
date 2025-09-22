@@ -4,6 +4,58 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+
+      #scanning-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2em;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+
+      #scanning-overlay.hidden {
+        display: none;
+      }
+
+      #scanning-overlay .dot-loader {
+        display: flex;
+        gap: 0.4em;
+        margin-top: 1em;
+      }
+
+      .dot-loader span {
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        animation: blink 1.4s infinite ease-in-out both;
+      }
+
+      .dot-loader span:nth-child(1) { animation-delay: 0s; }
+      .dot-loader span:nth-child(2) { animation-delay: 0.2s; }
+      .dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+
+      @keyframes blink {
+        0%, 80%, 100% { opacity: 0.3; }
+        40% { opacity: 1; }
+      }
+    </style>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const sceneEl = document.querySelector("a-scene");
@@ -26,8 +78,15 @@
   </head>
 
   <body>
+    <div id="scanning-overlay" class="hidden">
+      Escaneando marcador...
+      <div class="dot-loader">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
     <a-scene 
-      mindar-image="imageTargetSrc: ./target.mind; maxTrack: 2"
+      mindar-image="uiScanning: #scanning-overlay; imageTargetSrc: ./target.mind; maxTrack: 2"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
@@ -80,5 +139,7 @@
     </a-scene>
   </body>
 </html>
+
+
 
 
