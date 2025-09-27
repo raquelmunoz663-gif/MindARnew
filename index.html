@@ -82,7 +82,15 @@
 
           changeModelButton.addEventListener("click", () => {
             currentModel = (currentModel + 1) % models.length;
-            modelDisplay.setAttribute("gltf-model", models[currentModel]);
+            const selectedModel = models[currentModel];
+
+            modelDisplay.setAttribute("gltf-model", selectedModel);
+
+            if (selectedModel === "#butterflyModel") {
+              modelDisplay.setAttribute("scale", "1 1 1");
+            } else {
+              modelDisplay.setAttribute("scale", "0.2 0.2 0.2");
+            }
           });
         });
       });
@@ -109,7 +117,7 @@
     >
       <a-assets>
         <a-asset-item id="flowerModel" src="./flower.glb"></a-asset-item>
-        <a-asset-item id="butterflyModel" src="./Butterfly1.glb"></a-asset-item>
+        <a-asset-item id="butterflyModel" src="./Butterfly.glb"></a-asset-item>
         <a-asset-item id="treeModel" src="./Tree.glb"></a-asset-item>
       </a-assets>
 
@@ -143,5 +151,3 @@
     </a-scene>
   </body>
 </html>
-
-
