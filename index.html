@@ -3,6 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -66,13 +67,8 @@
         cursor: pointer;
       }
 
-      #change-model-button {
-        left: 10px;
-      }
-
-      #change-tree-button {
-        left: 170px;
-      }
+      #change-model-button { left: 10px; }
+      #change-tree-button { left: 170px; }
     </style>
 
     <script>
@@ -84,37 +80,43 @@
           const flowerModel = document.querySelector("#flowerModel");
           const butterflyModel = document.querySelector("#butterflyModel");
           const changeModelButton = document.querySelector("#change-model-button");
-
           changeModelButton.textContent = "Mostrar flor 🌸";
+
           changeModelButton.addEventListener("click", () => {
-            if (showingFlower) {
-              butterflyModel.setAttribute("visible", true);
-              flowerModel.setAttribute("visible", false);
-              changeModelButton.textContent = "Mostrar flor 🌸";
-            } else {
-              butterflyModel.setAttribute("visible", false);
-              flowerModel.setAttribute("visible", true);
-              changeModelButton.textContent = "Mostrar mariposa 🦋";
-            }
+            butterflyModel.setAttribute("visible", !showingFlower);
+            flowerModel.setAttribute("visible", showingFlower);
+            changeModelButton.textContent = showingFlower ? "Mostrar flor 🌸" : "Mostrar mariposa 🦋";
             showingFlower = !showingFlower;
           });
+
           let showingCampfire = false;
           const treeModel = document.querySelector("#treeModel");
           const campfireModel = document.querySelector("#campfireModel");
           const changeTreeButton = document.querySelector("#change-tree-button");
-
           changeTreeButton.textContent = "Mostrar fogata 🔥";
+
           changeTreeButton.addEventListener("click", () => {
-            if (showingCampfire) {
-              treeModel.setAttribute("visible", true);
-              campfireModel.setAttribute("visible", false);
-              changeTreeButton.textContent = "Mostrar fogata 🔥";
-            } else {
-              treeModel.setAttribute("visible", false);
-              campfireModel.setAttribute("visible", true);
-              changeTreeButton.textContent = "Mostrar árbol 🌳";
-            }
+            treeModel.setAttribute("visible", !showingCampfire);
+            campfireModel.setAttribute("visible", showingCampfire);
+            changeTreeButton.textContent = showingCampfire ? "Mostrar fogata 🔥" : "Mostrar árbol 🌳";
             showingCampfire = !showingCampfire;
+          });
+
+          const feedback0 = document.querySelector("#feedback0");
+          const feedback1 = document.querySelector("#feedback1");
+          const targetEntities = sceneEl.querySelectorAll("[mindar-image-target]");
+
+          targetEntities.forEach((targetEntity, index) => {
+            targetEntity.addEventListener("targetFound", () => {
+              const feedback = index === 0 ? feedback0 : feedback1;
+              if (feedback) {
+                feedback.setAttribute("visible", true);
+                feedback.emit("show");
+              }
+
+              const models = targetEntity.querySelectorAll("a-gltf-model");
+              models.forEach(model => model.emit("show"));
+            });
           });
         });
       });
@@ -147,58 +149,58 @@
         <a-asset-item id="campfireAsset" src="./Campfire.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera 
-        position="0 0 0"
-        look-controls="enabled: false"
-        cursor="fuse: false; rayOrigin: mouse;"
-        raycaster="objects: .clickable">
+      <a-camera position="0 0 0" look-controls="enabled: false"
+        cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable">
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model 
-          id="butterflyModel"
-          src="#butterflyAsset"
-          rotation="0 0 0"
-          position="0 0.25 -0.3"
-          scale="1 1 1"
-          visible="true"
+        <a-gltf-model id="butterflyModel" src="#butterflyAsset" rotation="0 0 0" position="0 0.25 -0.3"
+          scale="1 1 1" visible="true"
+          animation__pop="property: scale; to: 1.2 1.2 1.2; dur: 200; dir: alternate; startEvents: show"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
 
-        <a-gltf-model 
-          id="flowerModel"
-          src="#flowerAsset"
-          rotation="0 0 0"
-          position="0 0.25 -0.3"
-          scale="0.2 0.2 0.2"
-          visible="false"
+        <a-gltf-model id="flowerModel" src="#flowerAsset" rotation="0 0 0" position="0 0.25 -0.3"
+          scale="0.2 0.2 0.2" visible="false"
+          animation__pop="property: scale; to: 0.25 0.25 0.25; dur: 200; dir: alternate; startEvents: show"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
+
+        <a-entity id="feedback0" visible="false">
+          <a-text value="¡Modelo detectado!" color="#FFD700" position="0 0.6 0" align="center" opacity="0"
+            scale="1 1 1"
+            animation__fadein="property: opacity; to: 1; dur: 500; easing: easeOutCubic; startEvents: show"
+            animation__fadeout="property: opacity; to: 0; dur: 500; delay: 1500; easing: easeInCubic; startEvents: show">
+          </a-text>
+          <a-entity particle-system="preset: dust; color: #FFD700, #FFFFFF; particleCount: 100"
+            position="0 0.3 0"></a-entity>
+        </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-gltf-model 
-          id="treeModel"
-          src="#treeAsset"
-          rotation="0 0 0"
-          position="0 0.25 -0.3"
-          scale="0.003 0.003 0.003"
-          visible="true"
+        <a-gltf-model id="treeModel" src="#treeAsset" rotation="0 0 0" position="0 0.25 -0.3"
+          scale="0.003 0.003 0.003" visible="true"
+          animation__pop="property: scale; to: 0.0035 0.0035 0.0035; dur: 200; dir: alternate; startEvents: show"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
 
-        <a-gltf-model 
-          id="campfireModel"
-          src="#campfireAsset"
-          rotation="0 0 0"
-          position="0 0.25 -0.3"
-          scale="0.003 0.003 0.003"
-          visible="false"
+        <a-gltf-model id="campfireModel" src="#campfireAsset" rotation="0 0 0" position="0 0.25 -0.3"
+          scale="0.5 0.5 0.5" visible="false"
+          animation__pop="property: scale; to: 0.0035 0.0035 0.0035; dur: 200; dir: alternate; startEvents: show"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
+
+        <a-entity id="feedback1" visible="false">
+          <a-text value="¡Modelo detectado!" color="#FFD700" position="0 0.6 0" align="center" opacity="0"
+            scale="1 1 1"
+            animation__fadein="property: opacity; to: 1; dur: 500; easing: easeOutCubic; startEvents: show"
+            animation__fadeout="property: opacity; to: 0; dur: 500; delay: 1500; easing: easeInCubic; startEvents: show">
+          </a-text>
+          <a-entity particle-system="preset: dust; color: #FFD700, #FFFFFF; particleCount: 100"
+            position="0 0.3 0"></a-entity>
+        </a-entity>
       </a-entity>
     </a-scene>
   </body>
 </html>
-
 
