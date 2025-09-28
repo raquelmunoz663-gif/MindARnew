@@ -73,7 +73,7 @@
         const sceneEl = document.querySelector("a-scene");
 
         sceneEl.addEventListener("loaded", function () {
-          let showingFlower = true;
+          let showingFlower = false;
           const flowerModel = "#flowerModel";
           const butterflyModel = "#butterflyModel";
           const modelDisplay = document.querySelector("#model-display");
@@ -81,7 +81,7 @@
 
           if (!modelDisplay || !changeModelButton) return;
 
-          changeModelButton.textContent = "Mostrar mariposa 🦋";
+          changeModelButton.textContent = "Mostrar flor 🌸";
 
           changeModelButton.addEventListener("click", () => {
             if (showingFlower) {
@@ -136,8 +136,8 @@
           id="model-display"
           rotation="0 0 0"
           position="0 0.25 -0.3"
-          scale="0.2 0.2 0.2"
-          src="#flowerModel"
+          scale="1 1 1"
+          src="#butterflyModel"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
@@ -154,3 +154,4 @@
     </a-scene>
   </body>
 </html>
+
