@@ -81,13 +81,17 @@
 
           if (!modelDisplay || !changeModelButton) return;
 
+          changeModelButton.textContent = "Mostrar mariposa 🦋";
+
           changeModelButton.addEventListener("click", () => {
             if (showingFlower) {
-              modelDisplay.setAttribute("gltf-model", butterflyModel);
+              modelDisplay.setAttribute("src", butterflyModel);
               modelDisplay.setAttribute("scale", "1 1 1");
+              changeModelButton.textContent = "Mostrar flor 🌸";
             } else {
-              modelDisplay.setAttribute("gltf-model", flowerModel);
+              modelDisplay.setAttribute("src", flowerModel);
               modelDisplay.setAttribute("scale", "0.2 0.2 0.2");
+              changeModelButton.textContent = "Mostrar mariposa 🦋";
             }
             showingFlower = !showingFlower;
           });
@@ -104,7 +108,7 @@
       </div>
     </div>
 
-    <button id="change-model-button">Cambiar Modelo</button>
+    <button id="change-model-button">Cargando...</button>
 
     <a-scene 
       mindar-image="uiScanning: #scanning-overlay; imageTargetSrc: ./target.mind; maxTrack: 2"
