@@ -74,23 +74,23 @@
 
         sceneEl.addEventListener("loaded", function () {
           let showingFlower = false;
-          const flowerModel = "#flowerModel";
-          const butterflyModel = "#butterflyModel";
-          const modelDisplay = document.querySelector("#model-display");
+
+          const flowerModel = document.querySelector("#flowerModel");
+          const butterflyModel = document.querySelector("#butterflyModel");
           const changeModelButton = document.querySelector("#change-model-button");
 
-          if (!modelDisplay || !changeModelButton) return;
+          if (!flowerModel || !butterflyModel || !changeModelButton) return;
 
           changeModelButton.textContent = "Mostrar flor 🌸";
 
           changeModelButton.addEventListener("click", () => {
             if (showingFlower) {
-              modelDisplay.setAttribute("src", butterflyModel);
-              modelDisplay.setAttribute("scale", "1 1 1");
+              butterflyModel.setAttribute("visible", true);
+              flowerModel.setAttribute("visible", false);
               changeModelButton.textContent = "Mostrar flor 🌸";
             } else {
-              modelDisplay.setAttribute("src", flowerModel);
-              modelDisplay.setAttribute("scale", "0.2 0.2 0.2");
+              butterflyModel.setAttribute("visible", false);
+              flowerModel.setAttribute("visible", true);
               changeModelButton.textContent = "Mostrar mariposa 🦋";
             }
             showingFlower = !showingFlower;
@@ -119,8 +119,8 @@
       embedded
     >
       <a-assets>
-        <a-asset-item id="flowerModel" src="./flower.glb"></a-asset-item>
-        <a-asset-item id="butterflyModel" src="./Butterfly1.glb"></a-asset-item>
+        <a-asset-item id="flowerAsset" src="./flower.glb"></a-asset-item>
+        <a-asset-item id="butterflyAsset" src="./Butterfly1.glb"></a-asset-item>
         <a-asset-item id="treeModel" src="./Tree.glb"></a-asset-item>
       </a-assets>
 
@@ -133,11 +133,22 @@
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model 
-          id="model-display"
+          id="butterflyModel"
+          src="#butterflyAsset"
           rotation="0 0 0"
           position="0 0.25 -0.3"
           scale="1 1 1"
-          src="#butterflyModel"
+          visible="true"
+          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+        </a-gltf-model>
+
+        <a-gltf-model 
+          id="flowerModel"
+          src="#flowerAsset"
+          rotation="0 0 0"
+          position="0 0.25 -0.3"
+          scale="0.2 0.2 0.2"
+          visible="false"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
@@ -154,4 +165,3 @@
     </a-scene>
   </body>
 </html>
-
