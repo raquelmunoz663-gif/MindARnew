@@ -54,10 +54,9 @@
         40% { opacity: 1; }
       }
 
-      #change-model-button {
+      #change-model-button, #change-tree-button {
         position: absolute;
         top: 10px;
-        left: 10px;
         z-index: 10000;
         padding: 10px 20px;
         background-color: #fff;
@@ -65,6 +64,14 @@
         border-radius: 5px;
         font-size: 16px;
         cursor: pointer;
+      }
+
+      #change-model-button {
+        left: 10px;
+      }
+
+      #change-tree-button {
+        left: 170px;
       }
     </style>
 
@@ -74,15 +81,11 @@
 
         sceneEl.addEventListener("loaded", function () {
           let showingFlower = false;
-
           const flowerModel = document.querySelector("#flowerModel");
           const butterflyModel = document.querySelector("#butterflyModel");
           const changeModelButton = document.querySelector("#change-model-button");
 
-          if (!flowerModel || !butterflyModel || !changeModelButton) return;
-
           changeModelButton.textContent = "Mostrar flor 🌸";
-
           changeModelButton.addEventListener("click", () => {
             if (showingFlower) {
               butterflyModel.setAttribute("visible", true);
@@ -94,6 +97,24 @@
               changeModelButton.textContent = "Mostrar mariposa 🦋";
             }
             showingFlower = !showingFlower;
+          });
+          let showingCampfire = false;
+          const treeModel = document.querySelector("#treeModel");
+          const campfireModel = document.querySelector("#campfireModel");
+          const changeTreeButton = document.querySelector("#change-tree-button");
+
+          changeTreeButton.textContent = "Mostrar fogata 🔥";
+          changeTreeButton.addEventListener("click", () => {
+            if (showingCampfire) {
+              treeModel.setAttribute("visible", true);
+              campfireModel.setAttribute("visible", false);
+              changeTreeButton.textContent = "Mostrar fogata 🔥";
+            } else {
+              treeModel.setAttribute("visible", false);
+              campfireModel.setAttribute("visible", true);
+              changeTreeButton.textContent = "Mostrar árbol 🌳";
+            }
+            showingCampfire = !showingCampfire;
           });
         });
       });
@@ -109,6 +130,7 @@
     </div>
 
     <button id="change-model-button">Cargando...</button>
+    <button id="change-tree-button">Cargando...</button>
 
     <a-scene 
       mindar-image="uiScanning: #scanning-overlay; imageTargetSrc: ./target.mind; maxTrack: 2"
@@ -121,7 +143,8 @@
       <a-assets>
         <a-asset-item id="flowerAsset" src="./flower.glb"></a-asset-item>
         <a-asset-item id="butterflyAsset" src="./Butterfly1.glb"></a-asset-item>
-        <a-asset-item id="treeModel" src="./Tree.glb"></a-asset-item>
+        <a-asset-item id="treeAsset" src="./Tree.glb"></a-asset-item>
+        <a-asset-item id="campfireAsset" src="./Campfire.glb"></a-asset-item>
       </a-assets>
 
       <a-camera 
@@ -155,13 +178,27 @@
 
       <a-entity mindar-image-target="targetIndex: 1">
         <a-gltf-model 
+          id="treeModel"
+          src="#treeAsset"
           rotation="0 0 0"
           position="0 0.25 -0.3"
           scale="0.003 0.003 0.003"
-          src="#treeModel"
+          visible="true"
+          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+        </a-gltf-model>
+
+        <a-gltf-model 
+          id="campfireModel"
+          src="#campfireAsset"
+          rotation="0 0 0"
+          position="0 0.25 -0.3"
+          scale="0.003 0.003 0.003"
+          visible="false"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
     </a-scene>
   </body>
 </html>
+
+
